@@ -1,8 +1,13 @@
-from typing import List, Union
-from pydantic import AnyHttpUrl, validator
-from pydantic_settings import BaseSettings
+from typing import List
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        case_sensitive=True,
+        extra="ignore"
+    )
+
     APP_NAME: str = "POC Intelligence Platform"
     APP_ENV: str = "development"
     DEBUG: bool = True
@@ -25,6 +30,11 @@ class Settings(BaseSettings):
     EMBEDDING_PROVIDER: str = "google"
     VECTOR_DB_PROVIDER: str = "pgvector"
 
+    # LangChain / Observability
+    LANGCHAIN_TRACING_V2: bool = False
+    LANGCHAIN_API_KEY: str = ""
+    LANGCHAIN_PROJECT: str = "poc-intelligence-platform"
+
     # CORS
     CORS_ORIGINS: List[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
 
@@ -33,9 +43,5 @@ class Settings(BaseSettings):
     CHUNK_SIZE: int = 1000
     CHUNK_OVERLAP: int = 150
     RETRIEVAL_TOP_K: int = 5
-
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
 
 settings = Settings()
